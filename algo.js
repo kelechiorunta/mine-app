@@ -95,4 +95,68 @@ const mergeCells = (arr, n) => {
     }
 }
 
-console.log(mergeCells(cellnumbers,1).sort((a, b) => a-b))
+// console.log(mergeCells(cellnumbers,1).sort((a, b) => a-b))
+
+const calculateCell = (n, cols) => {
+    const row = Math.floor((n - 1) / cols);
+    const col = (n - 1) % cols;
+    return [row, col]
+}
+
+ console.log(calculateCell(5,4))
+
+export const getSurroundingCells = (n, cols, rows) => {
+    const neighbors = [];
+    
+    // Calculate the row and column of the target cell
+    const row = Math.floor((n - 1) / cols);
+    const col = (n - 1) % cols;
+  
+    // Define relative neighbor directions
+    const directions = [
+      [-1, -1], [-1, 0], [-1, 1],
+      [ 0, -1],          [ 0, 1],
+      [ 1, -1], [ 1, 0], [ 1, 1]
+    ];
+  
+    for (const [rowOffset, colOffset] of directions) {
+      const newRow = row + rowOffset;
+      const newCol = col + colOffset;
+    
+      // Check if the neighbor is within grid boundaries
+      if (newRow >= 0 && newRow < rows && newCol >= 0 && newCol < cols) {
+        const neighbor = newRow * cols + newCol + 1; // Convert back to cell number
+        
+        neighbors.push(neighbor);
+      }
+    }
+ 
+    return neighbors;
+  };
+  
+  // Example Usage
+  const cols = 4; // Number of columns
+  const rows = 3; // Number of rows
+  
+  console.log(getSurroundingCells(1, cols, rows)); // Output: [2, 5, 6]
+  console.log(getSurroundingCells(6, cols, rows)); // Output: [2, 3, 4, 5, 7, 9, 10, 11]
+  console.log(getSurroundingCells(12, cols, rows)); // Output: [7, 8, 11]
+  
+  
+    /**shuffles the array based on this recursive algorithm */
+    export const shuffleArr = (arr, n=arr.length) => {
+        const shuffled = [...arr];
+        if (n <= 0) {
+            return shuffled
+        } else {
+            let id = Math.floor(Math.random() * n);
+            
+            [shuffled[n-1], shuffled[id]] = [shuffled[id], shuffled[n-1]];
+
+            return [...shuffleArr(shuffled, n-1)]
+           
+        }
+    }
+
+    const nums = [97, 24, 3, 5, 9];
+    console.log(shuffleArr(nums, 4))
