@@ -36,17 +36,51 @@ document.addEventListener('DOMContentLoaded', () => {
             newArray.push(parseInt(cell.textContent))
         })
         const shuffledCells = shuffleArr(newArray);
-            console.log(shuffledCells)
+            
             const randomPos = Math.floor(Math.random() * shuffledCells.length) ;
-            shuffledCells.slice(0,randomPos-1).forEach((shuffledCell, index) => {
+            const slicedShuffledCells = shuffledCells.slice(0,randomPos-4)
+            slicedShuffledCells.forEach((shuffledCell, index) => {
                 
-                if (cells[shuffledCell]) {
-                    cells[shuffledCell].textContent = "√"
-                     cells[shuffledCell].style.color = "none"
-                    cells[shuffledCell].style.color = "blue"
+                if (cells[shuffledCell-1]) {
+                    cells[shuffledCell-1].textContent = "∆"
+                     cells[shuffledCell-1].style.color = "none"
+                    cells[shuffledCell-1].style.color = "blue"
                 }
-    
+            
             })
+
+            let originalArr = Array.from(cells, (cell, index) => index + 1);
+            let unslicedArr = originalArr.filter((item, index) => {
+                return !slicedShuffledCells.includes(item);
+            })
+                
+            console.log(unslicedArr)
+
+            unslicedArr.forEach((value, indx) => {
+                const filteredSurrondingCells = getSurroundingCells(parseInt(value), 4, 3);
+                const filteredCells = filteredSurrondingCells.filter(item => {
+                    return !unslicedArr.includes(item)
+                })
+                const lengthofCell = filteredCells.length;
+                if (lengthofCell <= 0) return 
+                else
+                console.log(value, lengthofCell)
+                // cells[value - 1].textContent = lengthofCell
+                cells.forEach((cell, index) => {
+                    if (cell.textContent==value && cell.textContent != filteredCells[index]) {
+                        cell.textContent = lengthofCell
+                    } 
+                    // else {
+                    //     cell.textContent = lengthofCell + '∆'
+                    // }
+                        
+                    // else{
+                    //     cell.textContent = "√"
+                    // }
+             })
+            })
+
+        
             
     })
 
