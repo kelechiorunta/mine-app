@@ -1,8 +1,26 @@
 import { getSurroundingCells, shuffleArr } from "./algo.js";
+import { mySuperH, myGrid } from "./custom.js";
 
 document.addEventListener('DOMContentLoaded', () => {
+    const container = document.querySelector('.container');
     const cells = document.querySelectorAll('.cell');
     const shuffleBtn = document.querySelector('.shuffle');
+    const showSafeBtn = document.querySelector('.showSafe');
+
+    showSafeBtn.addEventListener('click', () => {
+            // Example of untrusted input
+    const userInput = `
+    <img src="x" onerror="alert('Hacked!')">
+    <p>This is <strong>safe</strong> content.</p>
+    `;
+
+    // Use DOMPurify to sanitize the input
+    const sanitizedInput = DOMPurify.sanitize(userInput);
+    // const sanitizedInput = DOMPurify.sanitize(document.documentElement.innerHTML);
+
+    // Inject sanitized content into the DOM
+    document.getElementById('output').innerHTML = sanitizedInput;
+    })
 
     cells.forEach((cell, _) => {
         
@@ -70,19 +88,15 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (cell.textContent==value && cell.textContent != filteredCells[index]) {
                         cell.textContent = lengthofCell
                     } 
-                    // else {
-                    //     cell.textContent = lengthofCell + '∆'
-                    // }
-                        
-                    // else{
-                    //     cell.textContent = "√"
-                    // }
              })
             })
-
-        
+            
             
     })
+    
+    // Append the custom element to the DOM
+    container.appendChild(myGrid);
+    container.insertBefore(mySuperH, shuffleBtn);
 
     const clear = () => {
 

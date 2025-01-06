@@ -5,10 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mine</title>
     <link href="mine.css" rel="stylesheet" />
-    <script type="module" src="mine.js"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.1/purify.min.js"></script>
+    <script defer type="module" src="mine.js"></script>
 </head>
 <body>
     <div class="container">
+        <div id="output"></div>
+        <button class="showSafe">Show Safe Content</button>
+        <button class="shuffle">Shuffle Cells</button>
         <div class="grid_container">
             <div class="cell">1</div>
             <div class="cell">2</div>
