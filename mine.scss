@@ -1,8 +1,13 @@
+
+
 *::after, *::before, * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
     transform-style: preserve-3d;
+    font-family: "Lato", serif;
+    font-weight: 300;
+    font-style: normal;
 }
 
 body{
@@ -22,32 +27,97 @@ body{
     border: 2px solid;
     outline: 1px solid blue;
     box-shadow: 2px 2px 2px rgba(0,0,0,0.5);
-    margin: auto; 
+    margin: auto;
+    background-color: black; 
+    color: white;
+    
+    .board{
+        background-color: white;
+        display: flex;
+        width: 50%;
+        justify-content: space-between;
+        align-items: flex-start;
+        border: 2px solid;
+        margin: auto;
+        padding: 1rem;
+        border-radius: 10px;
+        box-shadow: 2px 2px 4px rgba(0,0,0,0.9);
+        min-height: 150px;
+        .shuffle{
+            // margin: auto ;
+            // margin-top: 1rem;
+            width: max-content;
+            padding: 15px;
+            font-size: 20px;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+        .result_board{
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            gap:2px;
+            .answer{
+                text-align: center;
+                margin: auto;
+                width: 100%;
+                // position: absolute;
+                border: 1px solid;
+
+            }
+            .check_result{
+                text-align: center;
+                width: max-content;
+                padding: 15px;
+                font-size: 20px;
+                border-radius: 10px;
+                cursor: pointer;
+            }
+        }
+    }
 }
 
 .grid_container{
+    background-color: white;
     display: grid;
     width: 60%;
     min-height: 60vh;
-    margin: 6.25% auto;
+    margin: auto;
     grid-template-columns: repeat(4, minmax(auto, 1fr));
-    grid-auto-rows: auto;
+    grid-auto-rows: 139px;
     border-radius: 10px;
-    border: 2px soild;
-    box-shadow: 2px 2px 2px rgba(0,0,0,0.9);
-    outline: 2px solid blue;
+    border: 2px soild rgba(0,0,0,0.9);
+    box-shadow: 10px 10px 12px rgba(0,0,0,0.9);
+    outline: 2px solid black;
     div{
         padding:1rem;
         box-shadow: 1px 1px 2px rgba(0,0,0,0.9);
         min-width: 50px;
-        font-size: 90px;
+        font-size: 80px;
+        border-top-right-radius: 10px;
         text-align: center;
         -webkit-text-stroke-color: blue;
         -webkit-text-stroke-width: 2px;
         cursor: pointer;
         color: white;
-        // display: flex;
         place-content: center;
+        position: relative;
+        span{
+            position: fixed;
+            inset: 0;
+            background-color: rgba(0,0,0,0.5);
+            z-index: -2;
+            width:100%;
+            // visibility: hidden;
+            // display: none;
+            input{
+                width:100%;
+                height:100%;
+                text-align: center;
+                font-size: 90px;
+            }   
+
+        }
     }
 }
 
@@ -55,13 +125,25 @@ body{
     display: grid;
     margin: auto;
     grid-template-columns: repeat(4, minmax(auto, 1fr));
-    grid-auto-rows: 50px;
+    grid-auto-rows: 100px;
     width: 400px;
-    height: 400px;
+    height: 60vh;
     gap:2px;
     border: 2px solid;
     box-shadow: 2px 2px 2px rgba(0,0,0,0.9);
     padding:2px;
+}
+
+.tab-menu{
+    width: 100%;
+    background-color: white;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+    button{
+        padding: 0.5rem;
+    }
 }
 
 .superH{
@@ -69,12 +151,3 @@ body{
     width: max-content;
 }
 
-.shuffle{
-    margin: auto 45.5%;
-    margin-top: 1rem;
-    width: max-content;
-    padding: 15px;
-    font-size: 20px;
-    border-radius: 10px;
-    cursor: pointer;
-}
