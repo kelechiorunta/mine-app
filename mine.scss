@@ -132,6 +132,14 @@ body{
     border: 2px solid;
     box-shadow: 2px 2px 2px rgba(0,0,0,0.9);
     padding:2px;
+    position: relative;
+}
+
+.ping{
+    // margin: -2px 40%;
+    margin-top: -10px;
+    position: absolute;
+    bottom: 0;
 }
 
 .tab-menu{

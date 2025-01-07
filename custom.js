@@ -30,6 +30,7 @@ class GridCells extends HTMLElement{
 
     // Lifecycle callback when the element is added to the DOM
     connectedCallback() {
+        // alert("Hello there friend")
         this.addEventListener('click', this.handleClick); // Attach event listener to the custom element
     }
 
@@ -50,7 +51,15 @@ class GridCells extends HTMLElement{
             btn.style.setProperty('min-height', '50px');
             container.append(btn);
         }
-        this.appendChild(container)
+        const ping = document.createElement('div');
+        ping.style.setProperty('width', '40%');
+        ping.style.setProperty('height', '10px');
+        ping.style.setProperty('background-color', 'green');
+        ping.setAttribute('class', 'ping');
+        
+        container.appendChild(ping);
+        this.appendChild(container);
+        
     }
 
     handleClick(event) {
