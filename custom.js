@@ -12,6 +12,8 @@ class MyH extends HTMLHeadingElement {
         this.setAttribute('class', name); // Store the name property
         this.textContent = text; // Set the text content of the element
         this.style.cursor = pointer;
+        this.style.color = 'black';
+        this.style.fontWeight = '600';
     }
 
     handleClick() {
@@ -39,6 +41,7 @@ class GridCells extends HTMLElement{
     initialize(name, cells){
         const container = document.createElement('div')
         container.setAttribute('class', 'gridCont')
+        container.style.setProperty('background-color', 'white')
         for (let n = 0; n < cells; n++){
             const btn = document.createElement('button')
             btn.setAttribute('class', name)
@@ -64,9 +67,9 @@ customElements.define('grid-cells', GridCells)
 customElements.define('custom-heading', MyH, { extends: 'h1' });
 
 const myGrid = document.createElement('grid-cells')
-myGrid.initialize("cells", 13);
+myGrid.initialize("cells", 10);
 // Create a new instance of the custom element
 const mySuperH = document.createElement('h1', { is: 'custom-heading' });
-mySuperH.initialize("superH", "Custom Header Game", "pointer"); // Initialize properties
+mySuperH.initialize("superH", "MINE COUNT", "pointer"); // Initialize properties
 
 export { mySuperH, myGrid }
