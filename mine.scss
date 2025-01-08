@@ -44,8 +44,7 @@ body{
         box-shadow: 2px 2px 4px rgba(0,0,0,0.9);
         min-height: 150px;
         .shuffle{
-            // margin: auto ;
-            // margin-top: 1rem;
+           
             width: max-content;
             padding: 15px;
             font-size: 20px;
@@ -133,6 +132,10 @@ body{
     box-shadow: 2px 2px 2px rgba(0,0,0,0.9);
     padding:2px;
     position: relative;
+    button{
+        transition: all 1s visibility 0.5s ease-in-out;
+        //transition: visibility 3s background-color 1s transform 2s opacity 1s z-index 0.1s ease-in-out;
+    }
 }
 
 .ping{
@@ -140,6 +143,13 @@ body{
     margin-top: -10px;
     position: absolute;
     bottom: 0;
+}
+
+.ball{
+    // margin: -2px 40%;
+    // margin-top: -70px;
+    position: absolute;
+    // bottom: 10px;
 }
 
 .tab-menu{
@@ -157,5 +167,16 @@ body{
 .superH{
     margin: auto;
     width: max-content;
+}
+
+.remove{
+    background-color: blue;
+    visibility: hidden;
+    opacity: 0;
+    z-index: -20;
+    // display: none;
+    transform: translateY(700%);
+
+    // display: none;
 }
 

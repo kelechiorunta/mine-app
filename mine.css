@@ -126,11 +126,18 @@ body {
   padding: 2px;
   position: relative;
 }
+.gridCont button {
+  transition: all 1s visibility 0.5s ease-in-out;
+}
 
 .ping {
   margin-top: -10px;
   position: absolute;
   bottom: 0;
+}
+
+.ball {
+  position: absolute;
 }
 
 .tab-menu {
@@ -149,4 +156,12 @@ body {
   margin: auto;
   width: -moz-max-content;
   width: max-content;
+}
+
+.remove {
+  background-color: blue;
+  visibility: hidden;
+  opacity: 0;
+  z-index: -20;
+  transform: translateY(700%);
 }/*# sourceMappingURL=mine.css.map */
