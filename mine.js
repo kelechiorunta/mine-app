@@ -1,5 +1,5 @@
 import { getSurroundingCells, shuffleArr } from "./algo.js";
-import { mySuperH, myGrid } from "./custom.js";
+import { mySuperH, createGrid, createCells } from "./custom.js";
 import './ball.js'
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -15,10 +15,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const navCont = document.querySelector('.tab-menu')
     const gameOne = document.querySelector('.game-one');
     const gameTwo = document.querySelector('.game-two');
+    const gameThree = document.querySelector('.game-three');
+
+    let gameSection = createCells(12)
+    // const gameSection = document.querySelector('.game_section')
     let arr = [];
     let arr_result = [];
     // container.append(myGrid);
     navCont.append(mySuperH)
+    let myGrid;
+    let fragment = new DocumentFragment();
+    let section = document.createElement('section');
     // container.insertBefore(mySuperH, board);
 
     gameOne.addEventListener('click', () => {
@@ -27,13 +34,60 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelector('.superH').style.setProperty('font-weight', 'bold')
         document.querySelector('.superH').style.setProperty('text-align', 'center')
         myGrid.remove();
+        gameSection.remove();
         container.append(board, gridContainer)
     })
-    gameTwo.addEventListener('click', () => {
+    
+    gameTwo.addEventListener('click', async() => {
         // board.remove();
         document.querySelector('.superH').textContent = 'MY GRID'
         gridContainer.remove();
-        container.append(myGrid);
+        gameSection.remove();
+        await import('./ball.js').then((file) => {console.log(file.default); container.append(file.default); myGrid = file.default})
+    })
+
+    gameThree.addEventListener('click', () => {
+        
+        gridContainer.remove();
+        // section.remove();
+        if (myGrid) {
+            myGrid.remove();
+        }
+
+        /**
+         * FOR LEARNING PURPOSES. DO NOT REMOVE.
+         * The object fragment is created from the class new DocumentFragment()
+         * Also created from document.createFragment(). A fragment to nest elements but itself
+         * does not have style or class attributes
+         * 
+         * The document.createRange creates a range object to set a boundary to abstract or extract nodes from 
+         * one node child (either a text or element node) to another using the setStart and setEnd APIs. To reproduce or clone
+         * the abstracted nodes we use range object function cloneContents().
+         */
+        // if (!section && section.length <= 0) {
+            // const heading = document.createElement('h1');
+            // const para = document.createElement('p');
+            // heading.setAttribute('class', 'three')
+            // heading.textContent = "Game Three";
+            // para.textContent = "This is game three"
+            // const newCells = document.createElement('grid-cells')
+            // newCells.initialize("gamecells", 5)
+
+            // const range = document.createRange();
+            // const startElem = container.querySelectorAll('h1')[0].childNodes[0]
+            // range.setStart(startElem,0);
+            // range.setEnd(startElem, startElem.length);
+            // const threeRange = range.cloneContents();
+            
+            //.setAttribute('class', 'fragment') //Has no class attribute. Cannot style it.
+            //fragment.append(heading, para, newCells);
+            //section.append(fragment)
+            container.append(gameSection);
+        // }
+        
+
+        
+        // container.append(threeRange)
     })
 
     // showSafeBtn.addEventListener('click', () => {
