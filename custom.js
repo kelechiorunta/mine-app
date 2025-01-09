@@ -51,6 +51,9 @@ class gameCell extends HTMLElement{
                 return this;
             }
             const card = document.createElement('button');
+            const customCardInit = new CustomEvent('cardInit',
+                {detail:{ cardidentity: (e) => e.target.textContent }, bubbles: true}
+            )
             card.setAttribute('class', 'card')
             card.setAttribute('id', cardNo)
             card.style.setProperty('border', '2px solid blue');
@@ -58,11 +61,17 @@ class gameCell extends HTMLElement{
             card.style.setProperty('min-width', '50px')
             card.style.setProperty('min-height', '50px');
             card.style.setProperty('cursor', 'pointer');
+            card.dispatchEvent(customCardInit)
+            card.addEventListener('click', (e) => {
+                e.target.dispatchEvent(customCardInit)
+                
+            })
             this.append(card);
             return createCards(cardNo - 1)  
         }
 
         createCards(cardNos)
+        this.addEventListener("cardInit", (e) => alert(`The card identity is ${e.detail.cardidentity(e)}`));
         // this.append(gameContent);
     }
 
@@ -72,10 +81,18 @@ class gameCell extends HTMLElement{
         } else if (event.target.classList.contains('game_section')) {
             /**The difference between getAttribute and getAttributeNode is that the 
              * former returns the result as a string while the latter returns
-             * the result as an object.
+             * the result as an object. getAttribute = string, getAttributeNode = object {key : value}
+             * 
+             * The CharacterData abstract interface represents a Node object that contains characters.
              */
+
             const classAttr = event.target.getAttributeNode('class');
-            console.log(classAttr)
+            //Get the characterData or first child node that contains text
+            //which will likely be a button say 12. The first child node of the
+            //button will be a text node which is returned in the console 
+
+            const firstNodeCharacterData = this.childNodes[0];
+            console.log(classAttr, firstNodeCharacterData.childNodes[0].data)
             alert('You clicked an empty space in the container')
         }
     }

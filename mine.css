@@ -145,6 +145,7 @@ body {
   background-color: white;
   padding: 1rem;
   display: flex;
+  justify-content: space-between;
   align-items: center;
   margin-bottom: 1rem;
 }
@@ -153,7 +154,6 @@ body {
 }
 
 .superH {
-  margin: auto;
   width: -moz-max-content;
   width: max-content;
 }
@@ -171,4 +171,13 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+}
+
+.recto, .recty {
+  border-radius: 100%;
+  background-color: teal;
+}
+
+.shape-fill {
+  transition: all 1s ease;
 }/*# sourceMappingURL=mine.css.map */

@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
     })
 
     gameThree.addEventListener('click', () => {
-        
+        document.querySelector('.superH').textContent = 'GAME CELL'
         gridContainer.remove();
         // section.remove();
         if (myGrid) {
@@ -262,4 +262,32 @@ document.addEventListener('DOMContentLoaded', () => {
         })
 
     }
+
 })
+
+//SVG ANIMATION with the offset value
+
+const pathElement = document.querySelector(".shape-fill");
+
+  // Calculate the total length of the path
+  const pathLength = pathElement.getTotalLength();
+
+  // Set stroke-dasharray and stroke-dashoffset for animation
+  pathElement.style.strokeDasharray = pathLength;
+  pathElement.style.strokeDashoffset = pathLength;
+  pathElement.style.opacity = 0.51;
+  pathElement.style.transition = "all 1s linear";
+let n= 110;
+let timeOut;
+  // Start animation after setting properties
+timeOut = setInterval(() => {
+    if (n < 110) {
+        pathElement.style.fill = 'white'
+        
+        clearInterval(timeOut);
+    } n--
+    console.log(n)
+    pathElement.style.strokeDashoffset = 0;
+    // Animate the stroke along the path
+    // if (pathLength >= 200) 
+}, 3000);
