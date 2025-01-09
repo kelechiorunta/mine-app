@@ -14,6 +14,7 @@ let range = document.createRange();
 let block_range = document.createRange();
 let posX = 0;
 let timeoutId;
+let pongarr = [];
 
 if (gridCont) {
     console.log(gridCont, gridCont.getBoundingClientRect());
@@ -165,6 +166,7 @@ let animateBall = (ball) => {
      * interaction of its boundary client rectangle with each block rectangles
      */
     
+
     blocks.forEach((block, index) => {
         let id;
         blockObserver.observe(block);
@@ -220,11 +222,19 @@ let animateBall = (ball) => {
             }
 
             if (index === id){
-                console.log("I am removed",block.id)
+                console.log("I am removed", block.id)
                 blocks[id].classList.add('remove'); 
+                pongarr.push(block.id)
+                console.log(pongarr)
+                if (pongarr.length == 12 ) {
+                    clearInterval(timerId)
+                    console.log("Complete")
+                }
+                // checkPongs(blocks)
             }
         
         })
+       
 
         /**
          * The logic to handle the interaction of the ball's client 
