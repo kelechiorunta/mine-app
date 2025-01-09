@@ -1,6 +1,7 @@
-import { myGrid } from "./custom.js";
+import { createGrid } from "./custom.js";
 
-let blockContainer = myGrid;//document.querySelector('.gridCont');
+let myGrid = createGrid(12)
+let blockContainer = myGrid//document.querySelector('.gridCont');//myGrid;//document.querySelector('.gridCont');
 let blocks = blockContainer.querySelectorAll('.cells');
 let paddle = blockContainer.querySelector('.ping');
 let ball = blockContainer.querySelector('.ball');
@@ -19,6 +20,156 @@ let pongarr = [];
 if (gridCont) {
     console.log(gridCont, gridCont.getBoundingClientRect());
 }
+
+let createNewGame = async() => {
+    await import(import.meta.url).then(res => {console.log(res.default);
+
+    // Replace the old grid with the new one in the container
+    let myGrid = createGrid(12)
+    container.appendChild(myGrid);
+
+    // Update references to the new grid and its elements
+     blockContainer = myGrid;
+     blocks = blockContainer.querySelectorAll('.cells');
+
+     paddle = blockContainer.querySelector('.ping');
+     ball = blockContainer.querySelector('.ball');
+     gridCont = document.querySelector('.gridCont');
+
+    var newtimerId;
+    let paddleRect;
+    let blockRect;
+    let range = document.createRange();
+    let block_range = document.createRange();
+    posX = 0;
+    // let timerId;
+    let timeoutId;
+    // timeoutId = null;);
+    let blockObserver = new IntersectionObserver(intersectingBlocks, intersectOptions);
+    let paddleObserver = new IntersectionObserver(intersectingPaddle, intersectOptions);
+    let ballObserver = new IntersectionObserver(intersectingBall, intersectOptions)
+
+    blocks.forEach(block => {
+        blockObserver.observe(block);
+    })
+    
+    paddleObserver.observe(paddle);
+    
+    ballObserver.observe(ball)
+
+    goleft;
+    goup = true;
+    xpos = 0;
+    ypos = 0;
+
+    startGame = (target) => {
+    newtimerId = setInterval(() => {
+        animatenewBall(target);  
+     }, 100);
+}
+
+    let animatenewBall = (ball) => {
+            let ballRange = document.createRange();
+                ballRange.setStartBefore(ball, 0);
+                ballRange.setEndAfter(ball, 50);
+            let ballRect = ballRange.getBoundingClientRect();
+                
+
+                if (goleft) {
+                    xpos -= 10;
+                }else if (!goleft) {
+                    xpos += 10;
+                }if (!goup) {
+                    ypos -= 10;
+                }else if (goup) {
+                    ypos += 10
+                }
+
+                ball.style.setProperty('left', `${xpos}px`);
+                ball.style.setProperty('bottom', `${parseInt(ypos + 10)}px`);
+                // console.log(ballRect)
+
+                if (xpos >= 370) {
+                    goleft = true
+                }else if (xpos <= 0) {
+                    goleft = false
+                }
+                else if (ballRect.y >= paddle.y - 40){
+                    goup = true
+                }
+                else if (ballRect.y <= 264){
+                    goup = false
+                }
+
+                /** The logic that handels the direction of the ball basec on the 
+                 * interaction of its boundary client rectangle with each block rectangles
+                 */
+                
+                blocks.forEach((block, index) => {
+                    let id;
+                    blockObserver.observe(block);
+                    
+                    blockRect = block.getBoundingClientRect();
+                    
+                        if ((ballRect.y >= blockRect.y + ballRect.height && ballRect.y <= blockRect.y + 100) &&
+                        (ballRect.x >= blockRect.x - 10 && ballRect.x <= blockRect.x + 100)){
+                            goup = false
+                        
+                            goleft = goleft//false
+                            id = block.id - 1//getblockRect(ball, block)
+                                
+                        } else if ((ballRect.y >= blockRect.y + ballRect.height && ballRect.y <= blockRect.y + 100)  &&
+                        (ballRect.x <= blockRect.x && ballRect.x >= blockRect.x - 50 )){
+                            goup = false
+                        
+                            goleft = true
+                            id = block.id - 1
+                                
+                        }else if ((ballRect.y >= blockRect.y - 50 && ballRect.y <= blockRect.y)  &&
+                        (ballRect.x >= blockRect.x - 50 && ballRect.x <= blockRect.x + 100)){
+                            goup = true
+                        
+                            goleft = goleft//true
+                            id = block.id - 1
+
+                                
+                        }
+                        else if ((ballRect.y >= blockRect.y - 50 && ballRect.y <= blockRect.y)  &&
+                        (ballRect.x >= blockRect.x + 50 && ballRect.x <= blockRect.x + 100) && (!goleft)){
+                            goup = true
+                        
+                            goleft = true
+                            id = block.id - 1
+                                
+                        }
+                        else if ((ballRect.y >= blockRect.y - 50 && ballRect.y <= blockRect.y)  &&
+                        (ballRect.x >= blockRect.x - 50 && ballRect.x <= blockRect.x + 50)){
+                            goup = true
+                        
+                            goleft = false;
+                            id = block.id - 1
+                                
+                        }
+                        else if ((ballRect.y >= blockRect.y - 50 && ballRect.y <= blockRect.y + 100)  &&
+                        (ballRect.x >= blockRect.x + 100 && ballRect.x <= blockRect.x + 130 )){
+                            goup = goup
+                        
+                            goleft = false;
+                            id = block.id - 1
+                                
+                        }
+
+                        if (index === id){
+                            console.log("I am removed",block.id)
+                            blocks[id].classList.add('remove'); 
+                        }
+                    
+                    })
+                    
+                }
+// startGame(ball)
+
+})}
 
 let intersectOptions = {
     root: blockContainer,
@@ -247,240 +398,254 @@ let animateBall = (ball) => {
             goup = true
             goleft = goleft
         } 
-        else if (ballRect.y > paddleRect.y + paddleRect.height) {//(!(ballRect.x > paddleRect.x - 30 && ballRect.x <= paddleRect.x + paddleRect.width + 30) && (ballRect.y >= (paddleRect.y - paddleRect.height - 30) && ballRect.y >= (paddleRect.y - paddleRect.height))) {
-            alert('game over');
+        else if (!(ballRect.x > paddleRect.x - 30 && ballRect.x <= paddleRect.x + paddleRect.width + 30) && (ballRect.y > paddleRect.y + paddleRect.height) ) {//(!(ballRect.x > paddleRect.x - 30 && ballRect.x <= paddleRect.x + paddleRect.width + 30) && (ballRect.y >= (paddleRect.y - paddleRect.height - 30) && ballRect.y >= (paddleRect.y - paddleRect.height))) {
             
+            ballObserver.unobserve(ball);
+            paddleObserver.unobserve(paddle)
+            blocks.forEach(block => blockObserver.unobserve(block))
+            alert('game over');
             myGrid.remove();
             clearInterval(timerId);
-            // clearTimeout(timeoutId);
-            // timerId = null;
+            timerId = undefined;
+            goup = true
+            createNewGame();
 
-            // Create a new grid instance and initialize it
-            const newGrid = document.createElement('grid-cells');
-            newGrid.initialize("cells", 12);
+            
+            
+            // myGrid.remove();
+            // clearInterval(timerId);
+            // // clearTimeout(timeoutId);
+            // // timerId = null;
 
-            // Replace the old grid with the new one in the container
-            container.appendChild(newGrid);
+            // // Create a new grid instance and initialize it
+            // // const newGrid = document.createElement('grid-cells');
+            // // newGrid.initialize("cells", 12);
 
-            // Update references to the new grid and its elements
-             blockContainer = newGrid;
-             blocks = blockContainer.querySelectorAll('.cells');
+            // // Replace the old grid with the new one in the container
+            // myGrid = createGrid(12)
+            // container.appendChild(myGrid);
 
-             paddle = blockContainer.querySelector('.ping');
-             ball = blockContainer.querySelector('.ball');
-             gridCont = document.querySelector('.gridCont');
+            // // Update references to the new grid and its elements
+            //  blockContainer = myGrid;
+            //  blocks = blockContainer.querySelectorAll('.cells');
 
-            var newtimerId;
-            let paddleRect;
-            let blockRect;
-            let range = document.createRange();
-            let block_range = document.createRange();
-            posX = 0;
-            // let timerId;
-            let timeoutId;
-            // timeoutId = null;
+            //  paddle = blockContainer.querySelector('.ping');
+            //  ball = blockContainer.querySelector('.ball');
+            //  gridCont = document.querySelector('.gridCont');
+
+            // var newtimerId;
+            // let paddleRect;
+            // let blockRect;
+            // let range = document.createRange();
+            // let block_range = document.createRange();
+            // posX = 0;
+            // // let timerId;
+            // let timeoutId;
+            // // timeoutId = null;
 
 
-            if (gridCont) {
-                console.log(gridCont, gridCont.getBoundingClientRect());
-            }
+            // if (gridCont) {
+            //     console.log(gridCont, gridCont.getBoundingClientRect());
+            // }
 
-            intersectOptions = {
-                root: blockContainer,
-                margin: '2px',
-                threshold: 1
-            }
+            // intersectOptions = {
+            //     root: blockContainer,
+            //     margin: '2px',
+            //     threshold: 1
+            // }
 
-            intersectingBlocks = (entries, observer) => {
-                entries.forEach(entry => {
-                    // if (entry.isIntersecting) {
-                        entry.target.classList.remove('remove')
-                        const btnId = entry.target.id;
-                        const rect = blockContainer.getGridRects().get(btnId);
-                        console.log(`Intersecting button: ${btnId}, Bounding Rect:`, rect);
-                    // }
+            // intersectingBlocks = (entries, observer) => {
+            //     entries.forEach(entry => {
+            //         // if (entry.isIntersecting) {
+            //             entry.target.classList.remove('remove')
+            //             const btnId = entry.target.id;
+            //             const rect = blockContainer.getGridRects().get(btnId);
+            //             console.log(`Intersecting button: ${btnId}, Bounding Rect:`, rect);
+            //         // }
                     
-                })
-            }
+            //     })
+            // }
 
 
 
-            intersectingPaddle = (entries, observer) => {
+            // intersectingPaddle = (entries, observer) => {
                 
-                entries.forEach(entry => {
-                    // console.log(entry.target);
-                    observer.observe(entry.target);
-                    const targetRect = entry.target.getBoundingClientRect();
-                //    let timeoutId;
+            //     entries.forEach(entry => {
+            //         // console.log(entry.target);
+            //         observer.observe(entry.target);
+            //         const targetRect = entry.target.getBoundingClientRect();
+            //     //    let timeoutId;
                     
-                    window.addEventListener('keydown', (event) => {
-                        if (event.key == "ArrowRight" && posX < '230') {
-                            if (!newtimerId) {
-                                timeoutId = setTimeout(()=>{
-                                    // alert("Here");
-                                    startnewGame(ball); clearTimeout(timeoutId)
-                                }, 100)
+            //         window.addEventListener('keydown', (event) => {
+            //             if (event.key == "ArrowRight" && posX < '230') {
+            //                 if (!newtimerId) {
+            //                     timeoutId = setTimeout(()=>{
+            //                         // alert("Here");
+            //                         startnewGame(ball); clearTimeout(timeoutId)
+            //                     }, 100)
                                 
-                                // clearTimeout(timeoutId)
-                            }
+            //                     // clearTimeout(timeoutId)
+            //                 }
                             
-                            posX += 5
-                            entry.target.style.setProperty('left', `${posX}px`)
-                        }
-                        else if (event.key == "ArrowLeft" && posX > '0') {
-                            posX -= 5
-                            entry.target.style.setProperty('left', `${posX}px`)
+            //                 posX += 5
+            //                 entry.target.style.setProperty('left', `${posX}px`)
+            //             }
+            //             else if (event.key == "ArrowLeft" && posX > '0') {
+            //                 posX -= 5
+            //                 entry.target.style.setProperty('left', `${posX}px`)
                             
-                        }
+            //             }
                         
-                            range.setStartBefore(entry.target, 0);
-                            range.setEndAfter(entry.target, posX);
-                            paddleRect = range.getBoundingClientRect();
-                            blocks.forEach(block => {
-                                blockObserver.observe(block);
-                                // console.log(blocks[0].getBoundingClientRect())
-                            })
+            //                 range.setStartBefore(entry.target, 0);
+            //                 range.setEndAfter(entry.target, posX);
+            //                 paddleRect = range.getBoundingClientRect();
+            //                 blocks.forEach(block => {
+            //                     blockObserver.observe(block);
+            //                     // console.log(blocks[0].getBoundingClientRect())
+            //                 })
                             
-                    })
-                })
-            }
-            intersectingBall = (entries, observer) => {
-                entries.forEach(entry => {
-                    observer.observe(entry.target)
-                    entry.target.style.setProperty('bottom', '10px');
+            //         })
+            //     })
+            // }
+            // intersectingBall = (entries, observer) => {
+            //     entries.forEach(entry => {
+            //         observer.observe(entry.target)
+            //         entry.target.style.setProperty('bottom', '10px');
                     
                     
                     
 
-                })
-            }
+            //     })
+            // }
 
-            blockObserver = new IntersectionObserver(intersectingBlocks, intersectOptions);
-            paddleObserver = new IntersectionObserver(intersectingPaddle, intersectOptions);
-            ballObserver = new IntersectionObserver(intersectingBall, intersectOptions)
+            // blockObserver = new IntersectionObserver(intersectingBlocks, intersectOptions);
+            // paddleObserver = new IntersectionObserver(intersectingPaddle, intersectOptions);
+            // ballObserver = new IntersectionObserver(intersectingBall, intersectOptions)
 
 
-            blocks.forEach(block => {
-                blockObserver.observe(block);
-            })
+            // blocks.forEach(block => {
+            //     blockObserver.observe(block);
+            // })
 
-            paddleObserver.observe(paddle);
+            // paddleObserver.observe(paddle);
 
-            ballObserver.observe(ball)
+            // ballObserver.observe(ball)
 
-            goleft = goleft;
-            goup = true;
-            xpos = 0;
-            ypos = 0;
+            // goleft = goleft;
+            // goup = true;
+            // xpos = 0;
+            // ypos = 0;
 
-            let startnewGame = (target) => {
-                newtimerId = setInterval(() => {
-                    animatenewBall(target);  
-                }, 100);
-            }
+            // let startnewGame = (target) => {
+            //     newtimerId = setInterval(() => {
+            //         animatenewBall(target);  
+            //     }, 100);
+            // }
 
         
-            let animatenewBall = (ball) => {
-                ballRange = document.createRange();
-                ballRange.setStartBefore(ball, 0);
-                ballRange.setEndAfter(ball, 50);
-                ballRect = ballRange.getBoundingClientRect();
+            // let animatenewBall = (ball) => {
+            //     ballRange = document.createRange();
+            //     ballRange.setStartBefore(ball, 0);
+            //     ballRange.setEndAfter(ball, 50);
+            //     ballRect = ballRange.getBoundingClientRect();
                 
 
-                if (goleft) {
-                    xpos -= 10;
-                }else if (!goleft) {
-                    xpos += 10;
-                }if (!goup) {
-                    ypos -= 10;
-                }else if (goup) {
-                    ypos += 10
-                }
+            //     if (goleft) {
+            //         xpos -= 10;
+            //     }else if (!goleft) {
+            //         xpos += 10;
+            //     }if (!goup) {
+            //         ypos -= 10;
+            //     }else if (goup) {
+            //         ypos += 10
+            //     }
 
-                ball.style.setProperty('left', `${xpos}px`);
-                ball.style.setProperty('bottom', `${parseInt(ypos + 10)}px`);
-                // console.log(ballRect)
+            //     ball.style.setProperty('left', `${xpos}px`);
+            //     ball.style.setProperty('bottom', `${parseInt(ypos + 10)}px`);
+            //     // console.log(ballRect)
 
-                if (xpos >= 370) {
-                    goleft = true
-                }else if (xpos <= 0) {
-                    goleft = false
-                }
-                else if (ballRect.y >= paddleRect.y - 40){
-                    goup = true
-                }
-                else if (ballRect.y <= 264){
-                    goup = false
-                }
+            //     if (xpos >= 370) {
+            //         goleft = true
+            //     }else if (xpos <= 0) {
+            //         goleft = false
+            //     }
+            //     else if (ballRect.y >= paddleRect.y - 40){
+            //         goup = true
+            //     }
+            //     else if (ballRect.y <= 264){
+            //         goup = false
+            //     }
 
-                /** The logic that handels the direction of the ball basec on the 
-                 * interaction of its boundary client rectangle with each block rectangles
-                 */
+            //     /** The logic that handels the direction of the ball basec on the 
+            //      * interaction of its boundary client rectangle with each block rectangles
+            //      */
                 
-                blocks.forEach((block, index) => {
-                    let id;
-                    blockObserver.observe(block);
+            //     blocks.forEach((block, index) => {
+            //         let id;
+            //         blockObserver.observe(block);
                     
-                    blockRect = block.getBoundingClientRect();
+            //         blockRect = block.getBoundingClientRect();
                     
-                        if ((ballRect.y >= blockRect.y + ballRect.height && ballRect.y <= blockRect.y + 100) &&
-                        (ballRect.x >= blockRect.x - 10 && ballRect.x <= blockRect.x + 100)){
-                            goup = false
+            //             if ((ballRect.y >= blockRect.y + ballRect.height && ballRect.y <= blockRect.y + 100) &&
+            //             (ballRect.x >= blockRect.x - 10 && ballRect.x <= blockRect.x + 100)){
+            //                 goup = false
                         
-                            goleft = goleft//false
-                            id = block.id - 1//getblockRect(ball, block)
+            //                 goleft = goleft//false
+            //                 id = block.id - 1//getblockRect(ball, block)
                                 
-                        } else if ((ballRect.y >= blockRect.y + ballRect.height && ballRect.y <= blockRect.y + 100)  &&
-                        (ballRect.x <= blockRect.x && ballRect.x >= blockRect.x - 50 )){
-                            goup = false
+            //             } else if ((ballRect.y >= blockRect.y + ballRect.height && ballRect.y <= blockRect.y + 100)  &&
+            //             (ballRect.x <= blockRect.x && ballRect.x >= blockRect.x - 50 )){
+            //                 goup = false
                         
-                            goleft = true
-                            id = block.id - 1
+            //                 goleft = true
+            //                 id = block.id - 1
                                 
-                        }else if ((ballRect.y >= blockRect.y - 50 && ballRect.y <= blockRect.y)  &&
-                        (ballRect.x >= blockRect.x - 50 && ballRect.x <= blockRect.x + 100)){
-                            goup = true
+            //             }else if ((ballRect.y >= blockRect.y - 50 && ballRect.y <= blockRect.y)  &&
+            //             (ballRect.x >= blockRect.x - 50 && ballRect.x <= blockRect.x + 100)){
+            //                 goup = true
                         
-                            goleft = goleft//true
-                            id = block.id - 1
+            //                 goleft = goleft//true
+            //                 id = block.id - 1
 
                                 
-                        }
-                        else if ((ballRect.y >= blockRect.y - 50 && ballRect.y <= blockRect.y)  &&
-                        (ballRect.x >= blockRect.x + 50 && ballRect.x <= blockRect.x + 100) && (!goleft)){
-                            goup = true
+            //             }
+            //             else if ((ballRect.y >= blockRect.y - 50 && ballRect.y <= blockRect.y)  &&
+            //             (ballRect.x >= blockRect.x + 50 && ballRect.x <= blockRect.x + 100) && (!goleft)){
+            //                 goup = true
                         
-                            goleft = true
-                            id = block.id - 1
+            //                 goleft = true
+            //                 id = block.id - 1
                                 
-                        }
-                        else if ((ballRect.y >= blockRect.y - 50 && ballRect.y <= blockRect.y)  &&
-                        (ballRect.x >= blockRect.x - 50 && ballRect.x <= blockRect.x + 50)){
-                            goup = true
+            //             }
+            //             else if ((ballRect.y >= blockRect.y - 50 && ballRect.y <= blockRect.y)  &&
+            //             (ballRect.x >= blockRect.x - 50 && ballRect.x <= blockRect.x + 50)){
+            //                 goup = true
                         
-                            goleft = false;
-                            id = block.id - 1
+            //                 goleft = false;
+            //                 id = block.id - 1
                                 
-                        }
-                        else if ((ballRect.y >= blockRect.y - 50 && ballRect.y <= blockRect.y + 100)  &&
-                        (ballRect.x >= blockRect.x + 100 && ballRect.x <= blockRect.x + 130 )){
-                            goup = goup
+            //             }
+            //             else if ((ballRect.y >= blockRect.y - 50 && ballRect.y <= blockRect.y + 100)  &&
+            //             (ballRect.x >= blockRect.x + 100 && ballRect.x <= blockRect.x + 130 )){
+            //                 goup = goup
                         
-                            goleft = false;
-                            id = block.id - 1
+            //                 goleft = false;
+            //                 id = block.id - 1
                                 
-                        }
+            //             }
 
-                        if (index === id){
-                            console.log("I am removed",block.id)
-                            blocks[id].classList.add('remove'); 
-                        }
+            //             if (index === id){
+            //                 console.log("I am removed",block.id)
+            //                 blocks[id].classList.add('remove'); 
+            //             }
                     
-                    })
+            //         })
                     
-                }}
+                // }
+            }
         
 
 }
 // console.log(blocks)
 // console.log(blocks)
+export default myGrid

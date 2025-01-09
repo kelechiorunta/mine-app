@@ -22,6 +22,69 @@ class MyH extends HTMLHeadingElement {
     }
 }
 
+/**
+ * CREATION OF THE GAMECELL FOR ANOTHER LEARNING GAME
+ */
+
+class gameCell extends HTMLElement{
+    constructor(){
+        super();
+        this.handleClick = this.handleClick.bind(this);
+    }
+
+    connectedCallback() {
+        // console.log(`Created successfully`, classAttr)
+        this.addEventListener('click', this.handleClick)
+    }
+
+    disconnectedCallback() {
+        console.log("Removed successfully");
+        this.removeEventListener('load')
+    }
+
+    initialize (this_class, cardNos) {
+        const gameContent = document.createElement('section');
+        this.setAttribute('class', this_class)
+        /**Recursive createCards algorithm */
+        const createCards = (cardNo) => {
+            if (cardNo <= 0){
+                return this;
+            }
+            const card = document.createElement('button');
+            card.setAttribute('class', 'card')
+            card.setAttribute('id', cardNo)
+            card.style.setProperty('border', '2px solid blue');
+            card.textContent = cardNo;
+            card.style.setProperty('min-width', '50px')
+            card.style.setProperty('min-height', '50px');
+            card.style.setProperty('cursor', 'pointer');
+            this.append(card);
+            return createCards(cardNo - 1)  
+        }
+
+        createCards(cardNos)
+        // this.append(gameContent);
+    }
+
+    handleClick(event){
+        if (event.target.tagName === 'BUTTON') {
+            alert(`You clicked card ${event.target.id}`)
+        } else if (event.target.classList.contains('game_section')) {
+            /**The difference between getAttribute and getAttributeNode is that the 
+             * former returns the result as a string while the latter returns
+             * the result as an object.
+             */
+            const classAttr = event.target.getAttributeNode('class');
+            console.log(classAttr)
+            alert('You clicked an empty space in the container')
+        }
+    }
+
+}
+
+/**
+ * CREATION OF THE GRID CELLS FOR THE PING PONG GAME
+ */
 class GridCells extends HTMLElement{
     constructor(){
         super();
@@ -59,13 +122,6 @@ class GridCells extends HTMLElement{
             btn.style.setProperty('min-height', '50px');
             
             container.append(btn);
-
-            // range.setStartBefore(btn, 0);
-            // range.setEndAfter(btn, 50);
-            // const btnRect = range.getBoundingClientRect();
-            // // // Store bounding rect in the Map with button ID as key
-            // this.gridRects.set(`${btn.getAttribute('id')}}`, btnRect);
-            // // // console.log(btnRect)
         }
         const ping = document.createElement('div');
         ping.style.setProperty('width', '40%');
@@ -116,12 +172,28 @@ class GridCells extends HTMLElement{
     }    
 }
 // Define the custom grid element
-customElements.define('grid-cells', GridCells)
+customElements.define('grid-cells', GridCells);
+
+//Define the custom game element
+customElements.define('game-cells', gameCell);
 // Define the custom heading element
 customElements.define('custom-heading', MyH, { extends: 'h1' });
 
-const myGrid = document.createElement('grid-cells')
-myGrid.initialize("cells", 12);
+const createGrid = (n) => {
+    const myGrid = document.createElement('grid-cells')
+    myGrid.initialize("cells", n);
+    return myGrid;
+
+}
+// const myGrid = document.createElement('grid-cells')
+// myGrid.initialize("cells", 12);
+
+const createCells = (n) => {
+    const gameCells = document.createElement('game-cells')
+    gameCells.initialize('game_section', n);
+    return gameCells;
+
+}
 
 // After layout update, calculate boundingClientRect
 // const buttons = myGrid.querySelectorAll('button');
@@ -143,4 +215,4 @@ myGrid.initialize("cells", 12);
 const mySuperH = document.createElement('h1', { is: 'custom-heading' });
 mySuperH.initialize("superH", "MINE COUNT", "pointer"); // Initialize properties
 
-export { mySuperH, myGrid }
+export { mySuperH, createGrid, createCells }
