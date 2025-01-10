@@ -48,5 +48,39 @@
     function(){
         this.dispatchEvent(customEventInit);
    })
-
  */
+   /**
+    * BACKGROUNDFETCH API;
+    * The Background Synchronization API provides a way for service workers to defer processing until
+    * a user is connected; however it can't be used for long running tasks such as downloading a large file.
+    * The Background Synchronization API enables a web app to defer tasks so that they can be run in a service
+    * worker once the user has a stable network connection.
+    * The API relies on service workers to create a SyncManagers interface that handles the registeration,
+    * scheduling of offline tasks to be run once the network is restored.
+    * 
+    * const ssyncMessagesLater = async() => {
+    *    const registration = await navigator.serviceWorker.ready;
+    *        try{
+    *            await registration.sync.register("sync-messages");
+    *       } catch {
+    *         console.log("Background Sync could not be registered!");
+    *       }    
+    *          
+    *
+    * }
+    * //TO check if the task has been registered in the serviceWorker
+    * navigator.serviceWorker.ready.then((registration) => {
+            registration.sync.getTags().then((tags) => {
+                if (tags.includes("sync-messages")) {
+                console.log("Messages sync already requested");
+                }
+      });
+     });
+
+    //To listen for the registered event for the registered task
+        self.addEventListener("sync", (event) => {
+    if (event.tag === "sync-messages") {
+        event.waitUntil(sendOutboxMessages());
+    }
+    });
+    */

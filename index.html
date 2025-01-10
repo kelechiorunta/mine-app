@@ -53,18 +53,27 @@
             <div id="11" class="cell">11</div>
             <div id="12" class="cell">12</div>
         </div>
-        <!-- <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" >
-            <g id="group_text_1" >
-              <text x="5" y="16" transform="scale(1, 1)" marginLeft="25px" fill="white">Welcome!</text>
-              <text x="8" y="32" transform="translate(0 20) scale(1 1)" fill="white">
-                Hello World Again!
-              </text>
-            </g> -->
-            <!-- Shows BBox in green -->
-            <!-- <rect id="rect_1" stroke="#00ff00" stroke-width="3" fill="none"></rect> -->
-            <!-- Shows BoundingClientRect in red -->
-            <!-- <rect id="rect_2" stroke="#ff0000" stroke-width="3" fill="none"></rect> -->
-          <!-- </svg> -->
+        <!-- <svg xmlns="http://www.w3.org/2000/svg" width="300px" height="100px">
+            <title>SVG SMIL Animate with Path</title>
+            <circle cx="0" cy="50" r="50" fill="blue" stroke="black" stroke-width="1">
+              <animateMotion path="M 0 0 H 300 Z" dur="5s" repeatCount="indefinite" />
+            </circle>
+        </svg> -->
+
+        <svg style="position: absolute; top:0; left:-10; z-index: -2" viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg">
+            <path
+              fill="none"
+              stroke="lightgrey"
+              d="M20,50 C20,-50 180,150 180,50 C180-50 20,150 20,50 z" />
+          
+            <circle r="5" fill="red">
+              <animateMotion
+                dur="10s"
+                repeatCount="indefinite"
+                path="M20,50 C20,-50 180,150 180,50 C180-50 20,150 20,50 z" />
+            </circle>
+          </svg>
+          
           
     </div>
 
