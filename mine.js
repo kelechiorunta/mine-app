@@ -291,3 +291,12 @@ timeOut = setInterval(() => {
     // Animate the stroke along the path
     // if (pathLength >= 200) 
 }, 3000);
+
+//Initiating serviceWorker
+
+if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register('./webWorker.js').then((reg) => {
+        //Registeration is successful
+        console.log("Registered Worker successfully", reg)
+    }).catch(err => console.log(err))
+}
