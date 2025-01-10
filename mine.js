@@ -2,7 +2,7 @@ import { getSurroundingCells, shuffleArr } from "./algo.js";
 import { mySuperH, createGrid, createCells } from "./custom.js";
 import './ball.js'
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async() => {
     const container = document.querySelector('.container');
     const gridContainer = document.querySelector('.grid_container')
     const cells = gridContainer.querySelectorAll('div .cell');
@@ -262,6 +262,39 @@ document.addEventListener('DOMContentLoaded', () => {
         })
 
     }
+    const registerWorker = async(scriptUrl) => {
+
+        if ("serviceWorker" in navigator) {
+            try{
+                const registration = await navigator.serviceWorker.register(scriptUrl, {scope: './'});
+                if (registration.installing) {
+                    console.log("Registered successfully", registration)
+                }else if (registration.waiting) {
+                    console.log("Registered worker is waiting.")
+                    await registration.sync.register("sync-messages");
+                }else if (registration.active) {
+                    console.log('Registered Service worker is active');
+                }
+            }
+            catch(err){
+                console.log(err.message);
+                throw new Error(err.message);
+            }
+        }
+    }
+
+    const syncMessagesLater = async() => {
+            const registration = await navigator.serviceWorker.ready;
+                try{
+                    await registration.sync.register("sync-messages");
+                    // console.log("Sync success")
+               } catch {
+                 console.log("Background Sync could not be registered!");
+               }    
+    }
+
+    await registerWorker('./webWorker.js')
+    await syncMessagesLater();
 
 })
 
@@ -294,9 +327,3 @@ timeOut = setInterval(() => {
 
 //Initiating serviceWorker
 
-if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register('./webWorker.js').then((reg) => {
-        //Registeration is successful
-        console.log("Registered Worker successfully", reg)
-    }).catch(err => console.log(err))
-}

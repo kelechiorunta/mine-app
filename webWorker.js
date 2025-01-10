@@ -58,7 +58,7 @@
     * The API relies on service workers to create a SyncManagers interface that handles the registeration,
     * scheduling of offline tasks to be run once the network is restored.
     * 
-    * const ssyncMessagesLater = async() => {
+    * const syncMessagesLater = async() => {
     *    const registration = await navigator.serviceWorker.ready;
     *        try{
     *            await registration.sync.register("sync-messages");
@@ -83,4 +83,130 @@
         event.waitUntil(sendOutboxMessages());
     }
     });
+
+    Other examples include
+        if ('serviceWorker' in navigator && 'SyncManager' in window) {
+    navigator.serviceWorker.ready.then(function(reg) {
+        return reg.sync.register('tag-name');
+    }).catch(function() {
+        // system was unable to register for a sync,
+        // this could be an OS-level restriction
+        postDataFromThePage();
+    });
+    } else {
+    // serviceworker/sync not supported
+    postDataFromThePage();
+    }
+
+        // Register your service worker:
+    navigator.serviceWorker.register('/sw.js');
+
+    // Then later, request a one-off sync:
+    navigator.serviceWorker.ready.then(function(swRegistration) {
+    return swRegistration.sync.register('myFirstSync');
+    });
+    ```
+
+    Then listen for the event in `/sw.js`:
+
+    ```js
+    self.addEventListener('sync', function(event) {
+    if (event.tag == 'myFirstSync') {
+        event.waitUntil(doSomeStuff());
+    }
+    });
     */
+
+    const addToCache = async (resources) => {
+        const cache = await caches.open('v1');
+        await cache.addAll(resources);
+      };
+
+    const storeInCache = async (req, res) => {
+        const cache = await caches.open('v1');
+        await cache.put(req, res);
+    };
+
+    const getCache = async ({ req, resPromise, defaultUrl }) => {
+        // First try to get the resource from the cache
+        const responseFromCache = await caches.match(req);
+        if (responseFromCache) {
+          return responseFromCache;
+        }
+      
+        // Next try to use the preloaded response, if it's there
+        // NOTE: Chrome throws errors regarding preloadResponse, see:
+        // https://bugs.chromium.org/p/chromium/issues/detail?id=1420515
+        // https://github.com/mdn/dom-examples/issues/145
+        // To avoid those errors, remove or comment out this block of preloadResponse
+        // code along with enableNavigationPreload() and the "activate" listener.
+        const cachedResponse = await resPromise;
+        if (cachedResponse) {
+          console.info('Cached Response', cachedResponse);
+          putInCache(req, cachedResponse.clone());
+          return cachedResponse;
+        }
+      
+        // Next try to get the resource from the network
+        try {
+          const response = await fetch(req.clone());
+          // response may be used only once
+          // we need to save clone to put one copy in cache
+          // and serve second one
+          storeInCache(req, response.clone());
+          return response;
+        } catch (error) {
+          const defaultResponse = await caches.match(defaultUrl);
+          if (defaultResponse) {
+            return defaultResponse;
+          }
+          else{
+            return new Response('Network error happened', {
+                status: 408,
+                headers: { 'Content-Type': 'text/plain' },
+            });
+          }     
+        }
+      };
+
+    self.addEventListener('install', (event) => {
+        console.log("Hello friend, I'm a service worker");
+        event.waitUntil(
+          addToCache([
+            './',
+            './index.html',
+            './mine.css',
+          ])
+        );
+      });
+
+      const enableNavigationPreload = async () => {
+        if (self.registration.navigationPreload) {
+          // Enable navigation preloads!
+          await self.registration.navigationPreload.enable();
+        }
+      };
+      
+      self.addEventListener('activate', (event) => {
+        console.log("I'm activated");
+        event.waitUntil(enableNavigationPreload());
+      });
+
+      self.addEventListener('fetch', (event) => {
+        event.respondWith(
+          getCache({
+            req: event.request,
+            resPromise: event.cachedResponse,
+            defaultUrl: './',
+          })
+        );
+      });
+      
+    self.addEventListener('sync', (e) => {
+        if (e.tag == "sync-messages") {
+            e.waitUntil(function(){
+                console.log("I got messages to sync")
+            });
+            
+        }
+    })
