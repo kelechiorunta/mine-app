@@ -161,23 +161,98 @@ export const getSurroundingCells = (n, cols, rows) => {
     const nums = [97, 24, 3, 5, 9];
     console.log(shuffleArr(nums, 4))
 
+    const checkValue = (val) => {
+        return new Promise((resolve, reject) => {
+            if (val > 10) {
+                resolve(`Value ${val} is greater than 10`);
+            } else {
+                reject("Value is not greater than 10");
+            }
+        });
+    };
+
+    const retrieveVal = (resolved) => {
+        return resolved
+    }
+
     const myPromise = (val) => {
         return new Promise((resolve, reject) => {
-            
-            try{
+
                 setTimeout(() => {
-                resolve(val + 2);
+                    if (val < 20) {
+                        resolve(val + 2);
+                    }else{
+                        reject("Value is higher than 20")
+                    }   
             }, 3000)
-            }catch(err){
-                reject(Error("Unable to resolve", err.message))
-            }
+            
         })
     }
 
-    myPromise(3).then(res => console.log(res))
+    const ourPromise = (val) => {
+        return myPromise(val) // Resolves myPromise
+            .then((firstResult) => {
+                return checkValue(firstResult); // Resolves checkValue
+            })
+            .then((finalResult) => {
+                console.log(finalResult); // Logs the final result
+            })
+            .catch((err) => {
+                console.error(err); // Logs any error
+            });
+    };
+    
 
-    const asyncmyPromise = async() => {
-        console.log(await myPromise(3));
+    const asyncmyPromise = async(val) => {
+        try{
+            console.log(await ourPromise(val));
+        }
+       catch(err) {
+            console.error(err)
+       }
     }
 
-    asyncmyPromise();
+    asyncmyPromise(8)
+
+    // const myPromise = (val) => {
+    //     return new Promise((resolve, reject) => {
+    //         setTimeout(() => {
+    //             if (val < 20) {
+    //                 resolve(val + 2);
+    //             } else {
+    //                 reject("Value is higher than 20");
+    //             }
+    //         }, 3000);
+    //     });
+    // };
+    
+    // const checkValue = (val) => {
+    //     return new Promise((resolve, reject) => {
+    //         if (val > 10) {
+    //             resolve(`Value ${val} is greater than 10`);
+    //         } else {
+    //             reject("Value is not greater than 10");
+    //         }
+    //     });
+    // };
+    
+    // const ourPromise = async (val) => {
+    //     try {
+    //         const firstResult = await myPromise(val); // Resolves myPromise
+    //         const finalResult = await checkValue(firstResult); // Resolves checkValue
+    //         console.log(finalResult); // Logs the final result
+    //     } catch (err) {
+    //         console.error(err); // Logs any error
+    //     }
+    // };
+    
+    // const asyncmyPromise = async (val) => {
+    //     try {
+    //         await ourPromise(val); // Calls ourPromise and waits for completion
+    //     } catch (err) {
+    //         console.error(err);
+    //     }
+    // };
+    
+    // asyncmyPromise(8);
+    
