@@ -57,6 +57,6 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
     event.respondWith((async() => {
         const preloadResponse = await event.preloadResponse;
-        cacheFirst({req: event.request, preloadResponsePromise: preloadResponse})
+        preloadResponse && cacheFirst({req: event.request, preloadResponsePromise: preloadResponse})
     })())
 })
