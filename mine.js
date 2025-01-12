@@ -270,9 +270,11 @@ document.addEventListener('DOMContentLoaded', async() => {
                 if (registration.installing) {
                     console.log("Registered successfully", registration)
                 }else if (registration.waiting) {
+                    registration.waiting.postMessage("I am waiting for you!")
                     console.log("Registered worker is waiting.")
-                    await registration.sync.register("sync-messages");
+                    registration.sync.register("sync-messages");
                 }else if (registration.active) {
+                    registration.active.postMessage("Hello worker")
                     console.log('Registered Service worker is active');
                 }
             }
@@ -293,8 +295,8 @@ document.addEventListener('DOMContentLoaded', async() => {
                }    
     }
 
-    await registerWorker('./webWorker.js')
-    await syncMessagesLater();
+    registerWorker('./sw.js')
+    // await syncMessagesLater();
 
 })
 

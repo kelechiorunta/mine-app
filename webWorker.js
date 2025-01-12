@@ -117,6 +117,10 @@
     });
     */
 
+
+
+    /** SERVICE WORKER FUNCTIONS AND EVENTS */
+
     const addToCache = async (resources) => {
         const cache = await caches.open('v1');
         await cache.addAll(resources);
@@ -128,18 +132,12 @@
     };
 
     const getCache = async ({ req, resPromise, defaultUrl }) => {
-        // First try to get the resource from the cache
+        // Verify if the resource exists in the cache
         const responseFromCache = await caches.match(req);
         if (responseFromCache) {
           return responseFromCache;
         }
       
-        // Next try to use the preloaded response, if it's there
-        // NOTE: Chrome throws errors regarding preloadResponse, see:
-        // https://bugs.chromium.org/p/chromium/issues/detail?id=1420515
-        // https://github.com/mdn/dom-examples/issues/145
-        // To avoid those errors, remove or comment out this block of preloadResponse
-        // code along with enableNavigationPreload() and the "activate" listener.
         const cachedResponse = await resPromise;
         if (cachedResponse) {
           console.info('Cached Response', cachedResponse);
@@ -150,9 +148,8 @@
         // Next try to get the resource from the network
         try {
           const response = await fetch(req.clone());
-          // response may be used only once
-          // we need to save clone to put one copy in cache
-          // and serve second one
+          //if there is no cachedResponse
+          //we need to save clone to put one copy in cache
           storeInCache(req, response.clone());
           return response;
         } catch (error) {
@@ -161,13 +158,18 @@
             return defaultResponse;
           }
           else{
-            return new Response('Network error happened', {
+            return new Response('Network error', {
                 status: 408,
                 headers: { 'Content-Type': 'text/plain' },
             });
           }     
         }
       };
+
+    self.addEventListener('message', (event) => {
+        console.log("This message is from server Web Worker: ", event.data);
+        event.source.postMessage("Thanks Server")
+    })
 
     self.addEventListener('install', (event) => {
         console.log("Hello friend, I'm a service worker");
@@ -179,17 +181,9 @@
           ])
         );
       });
-
-      const enableNavigationPreload = async () => {
-        if (self.registration.navigationPreload) {
-          // Enable navigation preloads!
-          await self.registration.navigationPreload.enable();
-        }
-      };
       
-      self.addEventListener('activate', (event) => {
-        console.log("I'm activated");
-        event.waitUntil(enableNavigationPreload());
+      self.addEventListener('activate', async(event) => {
+        event.waitUntil(() => console.log("I'm activated"));
       });
 
       self.addEventListener('fetch', (event) => {
