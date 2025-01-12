@@ -160,3 +160,24 @@ export const getSurroundingCells = (n, cols, rows) => {
 
     const nums = [97, 24, 3, 5, 9];
     console.log(shuffleArr(nums, 4))
+
+    const myPromise = (val) => {
+        return new Promise((resolve, reject) => {
+            
+            try{
+                setTimeout(() => {
+                resolve(val + 2);
+            }, 3000)
+            }catch(err){
+                reject(Error("Unable to resolve", err.message))
+            }
+        })
+    }
+
+    myPromise(3).then(res => console.log(res))
+
+    const asyncmyPromise = async() => {
+        console.log(await myPromise(3));
+    }
+
+    asyncmyPromise();
