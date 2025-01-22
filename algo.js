@@ -214,6 +214,24 @@ export const getSurroundingCells = (n, cols, rows) => {
 
     asyncmyPromise(8)
 
+    const computeNo = (n) => {
+        return new Promise((res, rej) => {
+            if (n <= 2) {
+                res(n + 3) //Add the no by 3
+            }else{
+                rej("Not a number")//Return an error "Not a number"
+            }
+        })
+    }
+
+    Promise.all([computeNo(1), computeNo(2), computeNo(0)])
+    .then(responses => {
+        for (const response of responses){
+            console.log(`${response} is good. It's a number`)
+        }
+    })
+    .catch(err => console.error(err))
+
     // const myPromise = (val) => {
     //     return new Promise((resolve, reject) => {
     //         setTimeout(() => {
